@@ -1,1 +1,23 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
+@import 'tailwindcss';
+
+* {
+    font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        width: 5px;
+    }
+    .no-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar-thumb {
+        background-color: rgba(64, 64, 64, 0.8);
+        border-radius: 10px;
+        border: 1px solid transparent;
+    }
+    .no-scrollbar:hover::-webkit-scrollbar {
+        display: block; /* Show scrollbar on hover */
+    }
+}
