@@ -36,10 +36,23 @@ const register = async (req, res) => {
 
         //Generating token
         const token = generateToken(newUser);
+
+        // Set cookie
+        res.cookie("authToken", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+        });
+
         return res.status(201).json({
             message: "User added Successfully",
-            token,
-            expiresIn: "1d",
+            user: {
+                id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                role: newUser.role,
+            },
         });
     } catch (error) {
         return res.status(500).json({ error: error.message });
@@ -66,10 +79,46 @@ const login = async (req, res) => {
 
         //Generating token
         const token = generateToken(userExists);
-        return res.status(200).json({ message: "Login successful", token });
+
+        // Set cookie
+        res.cookie("authToken", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+        });
+
+        return res.status(200).json({
+            message: "Login successful",
+            user: {
+                id: userExists._id,
+                name: userExists.name,
+                email: userExists.email,
+                role: userExists.role,
+            },
+        });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 };
 
-module.exports = { register, login };
+//User logout
+const logout = async (req, res) => {
+    try {
+        // Clear the authToken cookie
+        res.cookie("authToken", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 0, // Expire immediately
+        });
+
+        return res.status(200).json({
+            message: "Logout successful",
+        });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { register, login, logout };
