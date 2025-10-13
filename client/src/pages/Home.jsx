@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import Footer from "../components/Footer";
+import Hero from "../components/Hero";
 
 export default function Home() {
     return (
@@ -11,6 +12,7 @@ export default function Home() {
                     </h1>
                 </div>
                 <div className="hidden md:flex h-screen flex-col gap-20 px-10 py-8">
+                    <Hero />
                     <div className="flex-1 flex flex-col justify-center text-center gap-6">
                         <h3 className="text-sm bg-gray-100 text-gray-900 mx-auto px-1">
                             The Top Coding Education Platform for Everyone
