@@ -143,10 +143,6 @@ export const sessionAPI = {
         });
     },
 
-    getTADashboard: async () => {
-        return apiCall('/sessions/ta/dashboard');
-    },
-
     raiseHand: async (roomId) => {
         return apiCall(`/sessions/${roomId}/raise-hand`, {
             method: 'POST',
