@@ -1,16 +1,14 @@
 import { useState } from 'react';
 import { authAPI } from '../utils/api';
 import { cookieUtils } from '../utils/cookies';
-import { CircleCheck } from 'lucide-react';
 
-export default function Signup({ onSwitchToLogin }) {
+export default function Signup({ onSwitchToLogin, onRegistrationSuccess }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [registered, setRegistered] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,11 +31,10 @@ export default function Signup({ onSwitchToLogin }) {
                 cookieUtils.set('user', JSON.stringify(response.user), 1);
             }
 
-            setRegistered(true);
-            setUsername('');
-            setEmail('');
-            setPassword('');
-            setConfirmPassword('');
+            // Automatically redirect to /session after successful registration
+            if (onRegistrationSuccess) {
+                onRegistrationSuccess();
+            }
         } catch (error) {
             setError(error.message);
             console.error('Registration failed:', error);
@@ -45,23 +42,6 @@ export default function Signup({ onSwitchToLogin }) {
             setLoading(false);
         }
     };
-
-    // Show success screen after registration
-    if (registered) {
-        return (
-            <div className="flex flex-col items-center justify-center gap-6 text-center">
-                <h1 className="text-2xl font-semibold text-green-700">
-                    Registration Successful!
-                </h1>
-                <button
-                    onClick={onSwitchToLogin}
-                    className="flex cursor-pointer items-center gap-2 bg-green-600 px-2 py-1 text-gray-50 transition-colors duration-200 hover:bg-green-700"
-                >
-                    Ok <CircleCheck size={20} />
-                </button>
-            </div>
-        );
-    }
 
     return (
         <>

@@ -1,14 +1,11 @@
-import { ArrowUpRight, X, Plus } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { authAPI } from "../utils/api";
-import Login from "./Login";
-import Signup from "./Signup";
-import CreateSession from "./CreateSession";
-
+import { ArrowUpRight, X, Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authAPI } from '../utils/api';
+import Login from './Login';
+import Signup from './Signup';
 export default function Hero() {
     const [showAuthModal, setShowAuthModal] = useState(false);
-    const [showCreateSession, setShowCreateSession] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
@@ -28,7 +25,7 @@ export default function Hero() {
     const closeModal = () => setShowAuthModal(false);
 
     const goToDashboard = () => {
-        navigate("/session");
+        navigate('/session');
     };
 
     const openCreateSession = () => {
@@ -41,12 +38,12 @@ export default function Hero() {
 
     const handleSessionCreated = (newSession) => {
         setShowCreateSession(false);
-        console.log("New session created:", newSession);
+        console.log('New session created:', newSession);
     };
 
     return (
         <>
-            <div className="flex w-full justify-between items-center text-lg">
+            <div className="flex w-full items-center justify-between text-lg">
                 <a href="" className="font-semibold">
                     Code
                     <span className="bg-gradient-to-r from-green-500 to-green-300 bg-clip-text text-transparent">
@@ -74,21 +71,15 @@ export default function Hero() {
                 {isAuthenticated ? (
                     <div className="flex gap-3">
                         <button
-                            className="bg-blue-600 hover:bg-blue-700 px-3 py-1 flex items-center gap-1 transition-colors duration-200 cursor-pointer"
+                            className="flex cursor-pointer items-center gap-1 bg-blue-600 px-3 py-1 transition-colors duration-200 hover:bg-blue-700"
                             onClick={goToDashboard}
                         >
                             Go to Dashboard <ArrowUpRight />
                         </button>
-                        <button
-                            className="bg-green-600 hover:bg-green-700 px-3 py-1 flex items-center gap-1 transition-colors duration-200 cursor-pointer"
-                            onClick={openCreateSession}
-                        >
-                            Create Session <Plus size={16} />
-                        </button>
                     </div>
                 ) : (
                     <button
-                        className="bg-green-600 hover:bg-green-700 px-3 py-1 flex items-center gap-1 transition-colors duration-200 cursor-pointer"
+                        className="flex cursor-pointer items-center gap-1 bg-green-600 px-3 py-1 transition-colors duration-200 hover:bg-green-700"
                         onClick={openLogin}
                     >
                         Get Started <ArrowUpRight />
@@ -96,18 +87,21 @@ export default function Hero() {
                 )}
             </div>
             {showAuthModal && (
-                <div className="absolute inset-0 bg-gray-900/80 flex flex-1 flex-col justify-center items-center gap-6">
-                    <div className="bg-gray-100 text-gray-800 w-1/4 py-4 px-5 relative">
+                <div className="absolute inset-0 flex flex-1 flex-col items-center justify-center gap-6 bg-gray-900/80">
+                    <div className="relative w-1/4 bg-gray-100 px-5 py-4 text-gray-800">
                         <button
                             onClick={closeModal}
-                            className="p-1 rounded-full hover:rotate-90 transition-transform duration-300 absolute -top-3 -right-3 text-gray-800 bg-gray-100 hover:text-gray-700 cursor-pointer border"
+                            className="absolute -top-3 -right-3 cursor-pointer rounded-full border bg-gray-100 p-1 text-gray-800 transition-transform duration-300 hover:rotate-90 hover:text-gray-700"
                         >
                             <X size={20} />
                         </button>
                         <div className="flex flex-col gap-6">
                             {isSignup ? (
                                 <>
-                                    <Signup onSwitchToLogin={openLogin} />
+                                    <Signup
+                                        onSwitchToLogin={openLogin}
+                                        onRegistrationSuccess={goToDashboard}
+                                    />
                                 </>
                             ) : (
                                 <>
@@ -116,33 +110,16 @@ export default function Hero() {
                                     </h1>
                                     <Login />
                                     <p className="text-sm">
-                                        Don't have an Account?{" "}
+                                        Don't have an Account?{' '}
                                         <button
                                             onClick={openSignup}
-                                            className="text-green-800 cursor-pointer hover:text-green-700"
+                                            className="cursor-pointer text-green-800 hover:text-green-700"
                                         >
                                             SignUp
                                         </button>
                                     </p>
                                 </>
                             )}
-                        </div>
-                    </div>
-                </div>
-            )}
-            {showCreateSession && (
-                <div className="absolute inset-0 bg-gray-900/80 flex flex-1 flex-col justify-center items-center gap-6">
-                    <div className="bg-gray-100 text-gray-800 w-1/4 py-4 px-5 relative">
-                        <button
-                            onClick={closeCreateSession}
-                            className="p-1 rounded-full hover:rotate-90 transition-transform duration-300 absolute -top-3 -right-3 text-gray-800 bg-gray-100 hover:text-gray-700 cursor-pointer border"
-                        >
-                            <X size={20} />
-                        </button>
-                        <div className="flex flex-col gap-6">
-                            <CreateSession
-                                onSessionCreated={handleSessionCreated}
-                            />
                         </div>
                     </div>
                 </div>
