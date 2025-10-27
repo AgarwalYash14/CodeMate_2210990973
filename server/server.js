@@ -1,46 +1,61 @@
-const express = require("express");
-const http = require("http");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const connectDB = require("./config/db");
-const { initializeSocket } = require("./config/socket");
-require("dotenv").config();
+const express = require("express")
+const http = require("http")
+const cors = require("cors")
+const cookieParser = require("cookie-parser")
+const connectDB = require("./config/db")
+const { initializeSocket } = require("./config/socket")
+require("dotenv").config()
 
-const app = express();
-const server = http.createServer(app);
+const app = express()
 
-// Initialize Socket.IO
-const io = initializeSocket(server);
-
-//Running middleware
+// Running middleware
 app.use(
     cors({
-        origin: "http://localhost:5173", // Vite default port
+        origin: process.env.VITE_URL || "http://localhost:5173",
         credentials: true,
     })
-);
-app.use(express.json());
-app.use(cookieParser());
+)
+app.use(express.json())
+app.use(cookieParser())
 
-const PORT = process.env.PORT || 5000;
+// Routes
+const userRoutes = require("./routes/userRoutes")
+const sessionRoutes = require("./routes/sessionRoutes")
 
-//Routes
-const userRoutes = require("./routes/userRoutes");
-const sessionRoutes = require("./routes/sessionRoutes");
+app.use("/api/users", userRoutes)
+app.use("/api/sessions", sessionRoutes)
 
-app.use("/api/users", userRoutes);
-app.use("/api/sessions", sessionRoutes);
+const PORT = process.env.PORT || 5000
 
-async function startServer() {
-    try {
-        await connectDB();
-        server.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-            console.log(`Socket.IO is ready for connections`);
-        });
-    } catch (error) {
-        console.error("Failed to start server", error);
+let dbPromise
+const ensureDB = () => {
+    if (!dbPromise) {
+        dbPromise = connectDB().catch((err) => {
+            console.error("Mongo connection error:", err)
+            dbPromise = undefined
+            throw err
+        })
     }
+    return dbPromise
 }
 
-startServer();
+module.exports = async (req, res) => {
+    await ensureDB()
+    return app(req, res)
+}
+
+if (require.main === module) {
+    const server = http.createServer(app)
+    initializeSocket(server)
+    ;(async () => {
+        try {
+            await ensureDB()
+            server.listen(PORT, () => {
+                console.log(`Server is running on port ${PORT}`)
+                console.log(`Socket.IO is ready for connections`)
+            })
+        } catch (error) {
+            console.error("Failed to start server", error)
+        }
+    })()
+}

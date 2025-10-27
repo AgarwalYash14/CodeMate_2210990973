@@ -39,7 +39,7 @@ export default function Session() {
 
             // Validate that the token is still valid by making a test request
             try {
-                const userData = await sessionAPI.getUserSessions();
+                await sessionAPI.getUserSessions();
                 // Store current user info for socket connection
                 if (authAPI.getCurrentUser()) {
                     setCurrentUser(authAPI.getCurrentUser());
@@ -65,7 +65,9 @@ export default function Session() {
     // Initialize socket connection
     useEffect(() => {
         if (!socketRef.current) {
-            socketRef.current = io('http://localhost:5000', {
+            const socketUrl =
+                import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+            socketRef.current = io(socketUrl, {
                 withCredentials: true,
                 transports: ['websocket', 'polling'],
             });
@@ -189,7 +191,7 @@ export default function Session() {
                 socketRef.current.off('user-unmuted', handleUserUnmuted);
             }
         };
-    }, [socketRef.current, roomId, currentUser]);
+    }, [roomId, currentUser]);
 
     const showToastMessage = (message, type = 'info') => {
         setToastMessage(message);
