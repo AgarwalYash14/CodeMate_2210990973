@@ -32,11 +32,6 @@ const sessionRoutes = require("./routes/sessionRoutes")
 app.use("/api/users", userRoutes)
 app.use("/api/sessions", sessionRoutes)
 
-// Catch-all handler: send back index.html for any non-API routes (for SPA)
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"))
-})
-
 const PORT = process.env.PORT || 5000
 
 let dbPromise
