@@ -9,8 +9,11 @@ const connectDB = async () => {
         return
     }
     if (!isConnecting) {
+        const uri = process.env.DATABASE_NAME
+            ? `${process.env.MONGO_URI}/${process.env.DATABASE_NAME}`
+            : process.env.MONGO_URI
         isConnecting = mongoose
-            .connect(`${process.env.MONGO_URI}/${process.env.DATABASE_NAME}`)
+            .connect(uri)
             .then(() => {
                 console.log("MongoDB Connected")
             })

@@ -63,6 +63,7 @@ export default function Signup({ onSwitchToLogin, onRegistrationSuccess }) {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    autoComplete="username"
                 />
                 <input
                     type="email"
@@ -70,6 +71,7 @@ export default function Signup({ onSwitchToLogin, onRegistrationSuccess }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                 />
                 <input
                     type="password"
@@ -77,6 +79,7 @@ export default function Signup({ onSwitchToLogin, onRegistrationSuccess }) {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    autoComplete="new-password"
                 />
                 <input
                     type="password"
@@ -84,6 +87,7 @@ export default function Signup({ onSwitchToLogin, onRegistrationSuccess }) {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
+                    autoComplete="new-password"
                 />
                 <button
                     type="submit"
