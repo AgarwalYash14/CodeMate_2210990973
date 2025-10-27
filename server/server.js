@@ -2,6 +2,7 @@ const express = require("express")
 const http = require("http")
 const cors = require("cors")
 const cookieParser = require("cookie-parser")
+const path = require("path")
 const connectDB = require("./config/db")
 const { initializeSocket } = require("./config/socket")
 require("dotenv").config()
@@ -11,12 +12,18 @@ const app = express()
 // Running middleware
 app.use(
     cors({
-        origin: process.env.VITE_URL || "http://localhost:5173",
+        origin:
+            process.env.NODE_ENV === "production"
+                ? false
+                : process.env.VITE_URL || "http://localhost:5173",
         credentials: true,
     })
 )
 app.use(express.json())
 app.use(cookieParser())
+
+// Serve static files from public directory (for client)
+app.use(express.static(path.join(__dirname, "public")))
 
 // Routes
 const userRoutes = require("./routes/userRoutes")
@@ -24,6 +31,11 @@ const sessionRoutes = require("./routes/sessionRoutes")
 
 app.use("/api/users", userRoutes)
 app.use("/api/sessions", sessionRoutes)
+
+// Catch-all handler: send back index.html for any non-API routes (for SPA)
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"))
+})
 
 const PORT = process.env.PORT || 5000
 
